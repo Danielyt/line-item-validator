@@ -33,7 +33,12 @@ public class LineItemController {
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleTooManyLineItems(final TooManyLineItemsException exception) {
-        return ErrorResponse.builder().errors(exception).build();
+    public ErrorResponse handleTooManyLineItems(final TooManyLineItemsException exception) throws JsonProcessingException {
+        ErrorResponse response = ErrorResponse.builder()
+                .errors(exception)
+                .build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        log.info("Error response: " + objectMapper.writeValueAsString(response));
+        return response;
     }
 }
