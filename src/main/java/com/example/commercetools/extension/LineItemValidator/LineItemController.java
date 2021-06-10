@@ -1,6 +1,7 @@
 package com.example.commercetools.extension.LineItemValidator;
 
 import com.commercetools.api.models.cart.CartReference;
+import com.commercetools.api.models.cart.CartReferenceImpl;
 import com.commercetools.api.models.cart.LineItem;
 import com.commercetools.api.models.error.ErrorResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,7 +24,7 @@ public class LineItemController {
 
     @PostMapping(value = "/validate", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void validate(@RequestBody  final CartReference cart) {
+    public void validate(@RequestBody  final CartReferenceImpl cart) {
        long totalNumberOfLineItems = cart.getObj().getLineItems().stream().mapToLong(LineItem::getQuantity).sum();
        if(totalNumberOfLineItems > maxNumberOfLineItems) {
            String errorMessage = String.format("Max number of line items: %d, current : %d", maxNumberOfLineItems, totalNumberOfLineItems);
