@@ -26,7 +26,9 @@ public class LineItemController {
     public void validate(@RequestBody  final CartReference cart) {
        long totalNumberOfLineItems = cart.getObj().getLineItems().stream().mapToLong(LineItem::getQuantity).sum();
        if(totalNumberOfLineItems > maxNumberOfLineItems) {
-           throw new TooManyLineItemsException("too-many-line-items", String.format("Max number of line items: %d, current : %d", maxNumberOfLineItems, totalNumberOfLineItems));
+           String errorMessage = String.format("Max number of line items: %d, current : %d", maxNumberOfLineItems, totalNumberOfLineItems);
+           log.error(errorMessage);
+           throw new TooManyLineItemsException("too-many-line-items", errorMessage);
        }
     }
 
