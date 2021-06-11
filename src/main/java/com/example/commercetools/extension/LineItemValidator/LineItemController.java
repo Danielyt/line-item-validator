@@ -24,8 +24,12 @@ public class LineItemController {
 
     @PostMapping(value = "/validate", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void validate(@RequestBody  final CartReferenceImpl cart) {
-       long totalNumberOfLineItems = cart.getObj().getLineItems().stream().mapToLong(LineItem::getQuantity).sum();
+    public void validate(@RequestBody  final Request request) {
+        long totalNumberOfLineItems = ((CartReference) request.getResource()).getObj()
+                .getLineItems()
+                .stream()
+                .mapToLong(LineItem::getQuantity)
+                .sum();
        if(totalNumberOfLineItems > maxNumberOfLineItems) {
            String errorMessage = String.format("Max number of line items: %d, current : %d", maxNumberOfLineItems, totalNumberOfLineItems);
            log.error(errorMessage);
