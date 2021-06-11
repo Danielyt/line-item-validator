@@ -4,6 +4,7 @@ import com.commercetools.api.models.cart.CartReference;
 import com.commercetools.api.models.cart.CartReferenceImpl;
 import com.commercetools.api.models.cart.LineItem;
 import com.commercetools.api.models.error.ErrorResponse;
+import com.commercetools.api.models.error.InvalidInputError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class LineItemController {
        if(totalNumberOfLineItems > maxNumberOfLineItems) {
            String errorMessage = String.format("Max number of line items: %d, current : %d", maxNumberOfLineItems, totalNumberOfLineItems);
            log.error(errorMessage);
-           throw new TooManyLineItemsException("too-many-line-items", errorMessage);
+           throw new TooManyLineItemsException(errorMessage);
        }
     }
 
@@ -41,11 +42,10 @@ public class LineItemController {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleTooManyLineItems(final TooManyLineItemsException exception) throws JsonProcessingException {
-        ErrorResponse response = ErrorResponse.builder()
-                .errors(exception)
+        return ErrorResponse.builder()
+                .errors(InvalidInputError.builder()
+                        .message(exception.getMessage())
+                        .build())
                 .build();
-        ObjectMapper objectMapper = new ObjectMapper();
-        log.info("Error response: " + objectMapper.writeValueAsString(response));
-        return response;
     }
 }
